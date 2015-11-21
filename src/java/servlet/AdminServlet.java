@@ -7,9 +7,7 @@ package servlet;
 
 import controller.Auth;
 import dao.AdminDAO;
-import fx.lang.Int;
-import fx.lang.Str;
-import fx.security.cryptography.Cryptography;
+import fx.network.http.WebApplication;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,28 +31,29 @@ public class AdminServlet extends WebApplication {
      @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
-        String action = Str.get(request.getParameter("action"));
-        int id = Int.get(request.getParameter("id"));
+        init(request, response);
+        
+        String action = getString("action");
+        int id = getInt("id");
 
         if(Auth.isValid(request)) {
 
             if(action.equalsIgnoreCase("create")) {
-                request.getRequestDispatcher("admin_create.jsp").forward(request, response);
+                forward("admin_create.jsp");
             }
             else if(action.equalsIgnoreCase("edit")) {
-                request.setAttribute("data", new AdminDAO().findById(id));
-                request.getRequestDispatcher("admin_edit.jsp").forward(request, response);
+                setAttribute("data", new AdminDAO().findById(id));
+                forward("admin_edit.jsp");
             }
             else if(action.equalsIgnoreCase("delete")) {
                 new AdminDAO().delete(id);
-                response.sendRedirect("Admin");
+                redirect("Admin");
             }
             else {
-                request.setAttribute("list", new AdminDAO().findAll());
-                request.getRequestDispatcher("admin.jsp").forward(request, response);
+                setAttribute("list", new AdminDAO().findAll());
+                forward("admin.jsp");
             }
 
         }
@@ -73,51 +72,42 @@ public class AdminServlet extends WebApplication {
      @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String action = Str.get(request.getParameter("action"));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        
+        init(request, response);
+        
+        String action = getString("action");
 
         if(action.equalsIgnoreCase("create_save")) {
             AdminDAO admin = new AdminDAO();
-            admin.set("name", Str.get(request.getParameter("name")));
-            admin.set("email", Str.get(request.getParameter("email")));
-            admin.set("password", Str.get(request.getParameter("password")));
-            admin.set("status", Int.get(request.getParameter("status")));
+            admin.set("name", getString("name"));
+            admin.set("email", getString("email"));
+            admin.set("password", getString("password"));
+            admin.set("status", getInt("status"));
             admin.save();
-            response.sendRedirect("Admin");
+            redirect("Admin");
         }
         else if(action.equalsIgnoreCase("edit_save")) {
-            String oldPassword = Str.get(request.getParameter("password"));
-            String newPassword = Str.get(request.getParameter("new_password"));
+            String oldPassword = getString("password");
+            String newPassword = getString("new_password");
             String password = "";
             
             if(newPassword.equalsIgnoreCase("")) {
                 password = oldPassword;
             }
             else {
-                password = new Cryptography().md5(newPassword);
+                password = md5(newPassword);
             }
             
             AdminDAO admin = new AdminDAO();
-            admin.set("id", Int.get(request.getParameter("id")));
-            admin.set("name", Str.get(request.getParameter("name")));
-            admin.set("email", Str.get(request.getParameter("email")));
+            admin.set("id", getInt("id"));
+            admin.set("name", getString("name"));
+            admin.set("email", getString("email"));
             admin.set("password", password);
-            admin.set("status", Int.get(request.getParameter("status")));
+            admin.set("status", getInt("status"));
             admin.update();
-            response.sendRedirect("Admin");
+            redirect("Admin");
         }
     }
-
-    /**
-     Returns a short description of the servlet.
-
-     @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

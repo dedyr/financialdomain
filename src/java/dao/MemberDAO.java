@@ -42,5 +42,33 @@ public class MemberDAO extends ORM {
             e.printStackTrace();
             return null;
         }
+        finally {
+            list = null;
+        }
+    }
+    
+    public boolean avaliable(String email) {
+        List<Map> list = null;
+        try {
+            list = super.findBySQL("SELECT * FROM member WHERE email = '" + email + "';");
+            if(list != null) {
+                if(list.size() == 0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        finally {
+            list = null;
+        }
     }
 }

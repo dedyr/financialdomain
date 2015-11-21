@@ -17,9 +17,9 @@ public class Config {
     public static final String DRIVER = "org.postgresql.Driver";
     public static final String HOSTNAME = "localhost";
     public static final int PORT = 5432;
-    public static final String USERNAME = "postgres";
-    public static final String PASSWORD = "admin";
-    public static final String DATABASE = "FinancialDomain";
+    public static final String USERNAME = "root";
+    public static final String PASSWORD = "1234";
+    public static final String DATABASE = "financialdomain";
 
     public static Database getDataSource() {
         return new Database(Config.PROVIDER, Config.HOSTNAME, Int.get(Config.PORT), Config.USERNAME, Config.PASSWORD, Config.DATABASE);

@@ -8,8 +8,7 @@ package servlet;
 import controller.Auth;
 import dao.AssetDAO;
 import dao.DomainDAO;
-import fx.lang.Int;
-import fx.lang.Str;
+import fx.network.http.WebApplication;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,31 +32,32 @@ public class DomainServlet extends WebApplication {
      @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        
+        init(request, response);
 
-        String action = Str.get(request.getParameter("action"));
-        int id = Int.get(request.getParameter("id"));
+        String action = getString("action");
+        int id = getInt("id");
 
         if(Auth.isValid(request)) {
 
             if(action.equalsIgnoreCase("create")) {
-                request.setAttribute("list_asset", new AssetDAO().findAll());
-                request.getRequestDispatcher("domain_create.jsp").forward(request, response);
+                setAttribute("list_asset", new AssetDAO().findAll());
+                forward("domain_create.jsp");
             }
             else if(action.equalsIgnoreCase("edit")) {
-                request.setAttribute("list_asset", new AssetDAO().findAll());
-                request.setAttribute("data", new DomainDAO().findById(id));
-                request.getRequestDispatcher("domain_edit.jsp").forward(request, response);
+                setAttribute("list_asset", new AssetDAO().findAll());
+                setAttribute("data", new DomainDAO().findById(id));
+                forward("domain_edit.jsp");
             }
             else if(action.equalsIgnoreCase("delete")) {
                 new DomainDAO().delete(id);
-                response.sendRedirect("Domain");
+                redirect("Domain");
             }
             else {
                 Auth auth = new Auth(request);
-                request.setAttribute("list", new DomainDAO().findAllRequestDomainByMemberId(auth.getId()));
-                request.getRequestDispatcher("domain.jsp").forward(request, response);
+                setAttribute("list", new DomainDAO().findAllRequestDomainByMemberId(auth.getId()));
+                forward("domain.jsp");
             }
 
         }
@@ -76,41 +76,42 @@ public class DomainServlet extends WebApplication {
      @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        
+        init(request, response);
 
-        String action = Str.get(request.getParameter("action"));
+        String action = getString("action");
 
         if(action.equalsIgnoreCase("create_save")) {
             DomainDAO domain = new DomainDAO();
-            domain.set("asset_id", Int.get(request.getParameter("asset_id")));
-            domain.set("domain", Str.get(request.getParameter("domain")));
-            domain.set("privacy_protection", Str.get(request.getParameter("privacy_protection")));
-            domain.set("expire_date", Str.get(request.getParameter("expire_date")));
-            domain.set("auto_renewal", Int.get(request.getParameter("auto_renewal")));
-            domain.set("transfer_lock", Int.get(request.getParameter("transfer_lock")));
-            domain.set("price_per_month", Str.get(request.getParameter("price_per_month")));
-            domain.set("price_per_year", Str.get(request.getParameter("price_per_year")));
-            domain.set("price_forever", Str.get(request.getParameter("price_forever")));
-            domain.set("status", Int.get(request.getParameter("status")));
+            domain.set("asset_id", getInt("asset_id"));
+            domain.set("domain", getString("domain"));
+            domain.set("privacy_protection", getString("privacy_protection"));
+            domain.set("expire_date", getString("expire_date"));
+            domain.set("auto_renewal", getInt("auto_renewal"));
+            domain.set("transfer_lock", getInt("transfer_lock"));
+            domain.set("price_per_month", getString("price_per_month"));
+            domain.set("price_per_year", getString("price_per_year"));
+            domain.set("price_forever", getString("price_forever"));
+            domain.set("status", getInt("status"));
             domain.save();
-            response.sendRedirect("Domain");
+            redirect("Domain");
         }
         else if(action.equalsIgnoreCase("edit_save")) {
             DomainDAO domain = new DomainDAO();
-            domain.set("id", Int.get(request.getParameter("id")));
-            domain.set("asset_id", Int.get(request.getParameter("asset_id")));
-            domain.set("domain", Str.get(request.getParameter("domain")));
-            domain.set("privacy_protection", Str.get(request.getParameter("privacy_protection")));
-            domain.set("expire_date", Str.get(request.getParameter("expire_date")));
-            domain.set("auto_renewal", Int.get(request.getParameter("auto_renewal")));
-            domain.set("transfer_lock", Int.get(request.getParameter("transfer_lock")));
-            domain.set("price_per_month", Str.get(request.getParameter("price_per_month")));
-            domain.set("price_per_year", Str.get(request.getParameter("price_per_year")));
-            domain.set("price_forever", Str.get(request.getParameter("price_forever")));
-            domain.set("status", Int.get(request.getParameter("status")));
+            domain.set("id", getInt("id"));
+            domain.set("asset_id", getInt("asset_id"));
+            domain.set("domain", getString("domain"));
+            domain.set("privacy_protection", getString("privacy_protection"));
+            domain.set("expire_date", getString("expire_date"));
+            domain.set("auto_renewal", getInt("auto_renewal"));
+            domain.set("transfer_lock", getInt("transfer_lock"));
+            domain.set("price_per_month", getString("price_per_month"));
+            domain.set("price_per_year", getString("price_per_year"));
+            domain.set("price_forever", getString("price_forever"));
+            domain.set("status", getInt("status"));
             domain.update();
-            response.sendRedirect("Domain");
+            redirect("Domain");
         }
     }
 

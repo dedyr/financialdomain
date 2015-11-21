@@ -6,7 +6,9 @@
 package servlet;
 
 import dao.MemberDAO;
+import fx.lang.Str;
 import fx.network.http.WebApplication;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,37 +18,62 @@ import javax.servlet.http.HttpServletResponse;
 
  @author LENOVO
  */
-@WebServlet(name = "LoginServlet", urlPatterns = {"/Login"})
-public class LoginServlet extends WebApplication {
+@WebServlet(name = "RegisterServlet", urlPatterns = {"/Register"})
+public class RegisterServlet extends WebApplication {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-
         init(request, response);
         
-        if(getParameter("action") == null) {
-            forward("login.jsp");
-        }
-        else if(getString("action").equalsIgnoreCase("logout")) {
+        String action = getString("action");
+        
+        if(action.equalsIgnoreCase("")) {
             sessionDestroy();
+            forward("signup.jsp");
+        }
+        else if(action.equalsIgnoreCase("checkAvailable")) {
+            String email = getString("email");
+            
+            setContentType("text/html;charset=UTF-8");
+            
+            print(new MemberDAO().avaliable(email));
+            flush();
+        }
+        else if(action.equalsIgnoreCase("logout")) {
             redirect("Login?.auth=d56b699830e77ba53855679cb1d252dad56b699830e77ba53855679cb1d252dad56b699830e77ba53855679cb1d252da");
         }
         
-        clear();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         
         init(request, response);
-
+        
+        String first_name = "";
+        String last_name = "";
         String email = "";
         String password = "";
         try {
+            first_name = getString("first_name");
+            last_name = getString("last_name");
             email = getString("email");
             password = md5(getString("password"));
             
-            // Login Process
+            Map member = new HashMap();
+            member.put("member_type_id", 1);
+            member.put("full_name", Str.fit(first_name + " " + last_name));
+            member.put("first_name", first_name);
+            member.put("last_name", last_name);
+            member.put("email", email);
+            member.put("password", password);
+            member.put("register_date", date("yyyy-MM-dd HH:mm:ss"));
+            member.put("last_update_date", date("yyyy-MM-dd HH:mm:ss"));
+            member.put("last_login_date", date("yyyy-MM-dd HH:mm:ss"));
+            member.put("status", 1);
+            new MemberDAO().save(member);
+            
+             // Login Process
             Map data = new MemberDAO().login(email, password);
             
             if(data != null) {
