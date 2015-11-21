@@ -1,0 +1,32 @@
+@charset "utf-8";
+/* CSS Document */
+
+* { outline:none !important; }
+html, body { margin:0px; padding:0px; color:#000000 !important; font-size:12px !important; font-family:'Open Sans','Segoe UI',Calibri,Arial; }
+#logo { float:left; margin-right:20px; }
+h1  { margin:0px; padding:0px; }
+.comp_title { margin:0px; padding:0px; font-size:16px; }
+.line-header { border-bottom:5px double #FF9900; margin:20px 0px; }
+.title_data { font-size:14px; margin:20px 0px; }
+#title_bon { font-size:14px; margin-top:20px; text-decoration:underline; }
+#no_bon { margin-bottom:20px; font-size:13px; font-weight:normal; }
+
+.w100 { width:100% !important; }
+.ta-center { text-align:center !important; }
+.fl-left { float:left !important; }
+.fl-right { float:right !important; }
+
+.ta-left { text-align:left !important; }
+.ta-right { text-align:right !important; }
+.ta-center { text-align:center !important; }
+
+.badge { font-size:10px; background:#FF9900; border-radius:50%; color:#FFFFFF !important; padding:3px; }
+
+.bg-money { padding:5px; background:#f4ffd3; }
+.bg-total { border-top:1px solid #FF9900; border-bottom:4px double #FF9900; }
+table.datagrid { background:#FF9900 !important; border-collapse:collapse; border:1px solid #FF9900; font-size:12px !important; font-family:'Open Sans','Segoe UI',Calibri,Arial; }
+table.datagrid tr th { color:#FFFFFF; padding:7px; }
+table.datagrid tr td { background:#FFFFFF; color:#000000; border:1px solid #FF9900; padding:5px; }
+
+
+#footer { padding:10px; text-align:center; font-size:10px; margin-top:20px; }
